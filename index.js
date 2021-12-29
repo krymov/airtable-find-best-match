@@ -1,3 +1,45 @@
+function defineVector (record) {
+    const vector ={
+    clean: record.getCellValue("Clean"),
+    communication: record.getCellValue("Communication"),
+    noise: record.getCellValue("Noise"),
+    social: record.getCellValue("Social"),
+    fairness: record.getCellValue("Fairness"),
+    boundaries: record.getCellValue("Boundaries")
+    }
+    return vector
+}
+
+let tableUsers =  base.getTable("Users");
+let currentRecord = await input.recordAsync('',tableUsers).catch()
+let v = defineVector(currentRecord)
+let userStats = Object.values(v)
+
+let potentialMatches = []
+
+let query = await tableUsers.selectRecordsAsync()
+for (let record of query.records) {
+    let originalID = currentRecord.id
+    let recID = record.id
+    if (record.id != currentRecord.id) {
+        potentialMatches.push(record)
+    }
+}
+
+let potentialMatchesVectors = []
+
+for (let match of potentialMatches) {
+    let stats = Object.values(defineVector(match))
+    potentialMatchesVectors.push(stats)
+}
+
+const closest = new Closest(potentialMatchesVectors, true);
+let res = closest.get(userStats)
+
+await tableUsers.updateRecordAsync(currentRecord.id, {
+    "Best Match": [potentialMatches[res.index]]
+})
+
 class Closest {
   /**
    * Creates an instance of Closest.
@@ -144,52 +186,4 @@ class Closest {
     // return and save in cache
     return this.cache[valUID] = {closest, index};
   }
-}
-
-let tableUsers =  base.getTable("Users");
-let currentRecord = await input.recordAsync('',tableUsers).catch()
-let v = defineVector(currentRecord)
-let userStats = Object.values(v)
-// console.log(userStats);
-
-let potentialMatches = []
-
-let query = await tableUsers.selectRecordsAsync()
-for (let record of query.records) {
-    let originalID = currentRecord.id
-    let recID = record.id
-    if (record.id != currentRecord.id) {
-        potentialMatches.push(record)
-    }
-}
-
-// console.log(potentialMatches)
-
-let potentialMatchesVectors = []
-
-for (let match of potentialMatches) {
-    let stats = Object.values(defineVector(match))
-    potentialMatchesVectors.push(stats)
-}
-
-// console.log(potentialMatchesVectors)
-const closest = new Closest(potentialMatchesVectors, true);
-let res = closest.get(userStats)
-// console.log("RES", res.index)
-// console.log(potentialMatches[res.index].id)
-
-await tableUsers.updateRecordAsync(currentRecord.id, {
-    "Best Match": [potentialMatches[res.index]]
-})
-
-function defineVector (record) {
-    const vector ={
-    clean: record.getCellValue("Clean"),
-    communication: record.getCellValue("Communication"),
-    noise: record.getCellValue("Noise"),
-    social: record.getCellValue("Social"),
-    fairness: record.getCellValue("Fairness"),
-    boundaries: record.getCellValue("Boundaries")
-    }
-    return vector
 }
