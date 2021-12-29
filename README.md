@@ -1,3 +1,5 @@
 # airtable-find-best-match
 
-closest vector courtesy https://github.com/meodai/ClosestVector
+ask questions about airtable: https://t.me/airtablelikeapro
+
+Closest Vector library: https://github.com/meodai/ClosestVector
