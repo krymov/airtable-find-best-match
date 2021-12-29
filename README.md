@@ -12,6 +12,6 @@ The first iteration was manual (so that the team could work out a hypothesis bas
 
 I added Scripting App Block, which used js library to find the nearest vector and wrote a simple algorithm to search and filter all records, fetching user parameters from corresponding strings.
 
-Ask me questions about airtable: https://t.me/airtablelikeapro
+Ask me questions about airtable in this telegram community: https://t.me/airtablelikeapro
 
 Closest Vector library: https://github.com/meodai/ClosestVector
